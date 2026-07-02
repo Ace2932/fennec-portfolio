@@ -1,6 +1,6 @@
 # NovaSM3 LE — Autonomous Quadruped (silicon → autonomy, built solo)
 
-A four-legged robot I designed and brought up end-to-end: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM — all integrated into one machine that stands, balances, and maps. Built in public ([@outofofficefox](https://instagram.com/outofofficefox)).
+A four-legged robot I designed and brought up end-to-end: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM — all integrated into one machine that stands, balances, and maps.
 
 **Why it matters:** most robotics projects stop at one layer. NovaSM3 is the whole stack — I own it from the PCB copper to the autonomy node, which is exactly the systems-integration work that makes hardware actually ship.
 
@@ -28,7 +28,6 @@ Battery ─► [Custom Power PCB: buck rails, INA226 telemetry, MOSFET protect, 
 
 ## Links
 - **Public fix:** `unilidar_sdk2` fork — `fix/imu-bridge-double-call` — [github.com/Ace2932/unilidar_sdk2](https://github.com/Ace2932/unilidar_sdk2)
-- **Build-in-public:** [@outofofficefox](https://instagram.com/outofofficefox)
 - **Demo video:** _coming — 30–60s clip_
 
 ---
