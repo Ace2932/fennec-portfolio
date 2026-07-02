@@ -1,8 +1,8 @@
-# NovaSM3 LE — Autonomous Quadruped (silicon → autonomy, built solo)
+# Fennec — Autonomous Quadruped (silicon → autonomy, built solo)
 
-A four-legged robot I designed and brought up end-to-end: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM — all integrated into one machine that stands, balances, and maps.
+A four-legged robot I designed and brought up end-to-end: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM — all integrated into one machine that stands, balances, and maps. Built on the open-source Nova-SM3 platform, heavily redesigned.
 
-**Why it matters:** most robotics projects stop at one layer. NovaSM3 is the whole stack — I own it from the PCB copper to the autonomy node, which is exactly the systems-integration work that makes hardware actually ship.
+**Why it matters:** most robotics projects stop at one layer. Fennec is the whole stack — I own it from the PCB copper to the autonomy node, which is exactly the systems-integration work that makes hardware actually ship.
 
 ## Highlights
 - **200 Hz hard-real-time control** on a Teensy 4.1 (IMXRT1062 Cortex-M7): p99 scheduling jitter **1 µs** — 100× under my <100 µs acceptance gate. Software watchdog (SCB_AIRCR reset on hang) + exec-time/latency histograms streamed over USB-CDC.
