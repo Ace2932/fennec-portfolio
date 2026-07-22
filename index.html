@@ -12,100 +12,120 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
 <style>
   :root{
-    --bg:#0b0d10; --panel:#14171c; --panel2:#1b1f26; --line:#262b33;
-    --text:#e7eaee; --muted:#9aa4b2; --accent:#f0883e; --accent2:#5aa6ff; --green:#54c98b;
+    --board:#070b09; --board2:#0c120f; --panel:#0e1512; --line:#1b2620;
+    --copper:#e0a53f; --copper-dim:rgba(224,165,63,.5); --signal:#46e0ff; --green:#3fd08a;
+    --silk:#eef3ef; --muted:#8a988d;
     --mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{background:var(--board);color:var(--silk);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   a{color:inherit;text-decoration:none}
-  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
   .mono{font-family:var(--mono)}
-  .accent{color:var(--accent)}
+  ::selection{background:rgba(70,224,255,.25)}
 
   /* nav */
-  header{position:sticky;top:0;z-index:10;background:rgba(11,13,16,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  nav{display:flex;align-items:center;justify-content:space-between;height:58px}
-  nav .logo{font-weight:800;font-size:16px;letter-spacing:.3px}
-  nav .links{display:flex;gap:22px;font-size:14px;color:var(--muted)}
-  nav .links a:hover{color:var(--text)}
+  header{position:sticky;top:0;z-index:20;background:rgba(7,11,9,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:56px}
+  nav .logo{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:1px;color:var(--copper)}
+  nav .logo::before{content:'◇ '}
+  nav .links{display:flex;gap:22px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  nav .links a:hover{color:var(--signal)}
   @media(max-width:560px){nav .links{display:none}}
 
-  /* hero */
-  .hero{padding:88px 0 64px}
-  .hero .kicker{font-family:var(--mono);color:var(--accent);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
-  .hero h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacing:-1px}
-  .hero p.lead{margin-top:20px;font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:640px}
-  .hero .meta{margin-top:16px;color:var(--muted);font-size:15px}
+  /* hero with PCB canvas */
+  .hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+  #pcb{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 70% 60% at 30% 45%,transparent 40%,rgba(7,11,9,.55) 100%)}
+  .hero .wrap{z-index:2;padding-top:40px;padding-bottom:40px}
+  .kicker{font-family:var(--mono);color:var(--signal);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:'';width:26px;height:1px;background:var(--signal);box-shadow:0 0 8px var(--signal)}
+  .hero h1{font-size:clamp(36px,6.5vw,62px);line-height:1.02;font-weight:800;letter-spacing:-1.5px}
+  .hero h1 .em{color:var(--copper);text-shadow:0 0 24px rgba(224,165,63,.35)}
+  .hero p.lead{margin-top:22px;font-size:clamp(17px,2.3vw,20px);color:#c3cec6;max-width:600px}
+  .hero p.lead b{color:var(--silk)}
+  .hero .meta{margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:13.5px}
   .cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--panel);transition:.15s}
-  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .btn.primary{background:var(--accent);color:#160c04;border-color:var(--accent)}
-  .btn.primary:hover{filter:brightness(1.08)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 17px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;border:1px solid var(--line);background:rgba(14,21,18,.7);transition:.15s;backdrop-filter:blur(4px)}
+  .btn:hover{border-color:var(--signal);color:var(--signal);transform:translateY(-1px);box-shadow:0 0 18px rgba(70,224,255,.15)}
+  .btn.primary{background:var(--copper);color:#160c04;border-color:var(--copper)}
+  .btn.primary:hover{filter:brightness(1.08);color:#160c04;box-shadow:0 0 22px rgba(224,165,63,.4)}
 
   /* sections */
-  section.block{padding:56px 0;border-top:1px solid var(--line)}
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
+  section.block{padding:60px 0;border-bottom:1px solid var(--line);position:relative}
+  .desig{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--copper);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .desig .pad{width:11px;height:11px;border:2px solid var(--copper);border-radius:2px;box-shadow:0 0 8px rgba(224,165,63,.4);flex:none}
   .proj-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
-  h2{font-size:clamp(24px,4vw,32px);font-weight:800;letter-spacing:-.5px}
-  .tag{font-family:var(--mono);font-size:12px;color:var(--green);border:1px solid #244; background:#0f1a14;padding:3px 9px;border-radius:20px;white-space:nowrap}
-  .subtitle{color:var(--muted);margin-top:8px;font-size:17px}
+  h2{font-size:clamp(24px,4vw,33px);font-weight:800;letter-spacing:-.5px}
+  .status{font-family:var(--mono);font-size:11.5px;color:var(--green);border:1px solid rgba(63,208,138,.3);background:rgba(63,208,138,.07);padding:4px 11px;border-radius:4px;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+  .status::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  .subtitle{color:var(--muted);margin-top:10px;font-size:17px;max-width:760px}
 
-  ul.feat{list-style:none;margin:20px 0 0;display:grid;gap:11px}
-  ul.feat li{position:relative;padding-left:24px;color:#cdd4dd;font-size:15.5px}
-  ul.feat li::before{content:'▹';position:absolute;left:0;color:var(--accent);font-size:15px}
-  ul.feat li b{color:var(--text)}
+  ul.feat{list-style:none;margin:22px 0 0;display:grid;gap:11px}
+  ul.feat li{position:relative;padding-left:26px;color:#c8d1ca;font-size:15.5px}
+  ul.feat li::before{content:'';position:absolute;left:2px;top:11px;width:11px;height:1px;background:var(--copper);box-shadow:0 0 6px rgba(224,165,63,.5)}
+  ul.feat li::after{content:'';position:absolute;left:13px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--copper);box-shadow:0 0 6px var(--copper)}
+  ul.feat li b{color:var(--silk)}
 
-  .chips{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
-  .chip{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);padding:4px 10px;border-radius:6px}
-  .links-row{margin-top:20px;display:flex;flex-wrap:wrap;gap:16px;font-size:14px}
-  .links-row a{color:var(--accent2);border-bottom:1px solid transparent;padding-bottom:1px}
-  .links-row a:hover{border-color:var(--accent2)}
+  .chips{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:11.5px;color:#c3cec6;background:var(--board2);border:1px solid var(--line);padding:5px 11px;border-radius:3px;position:relative}
+  .chip::before,.chip::after{content:'';position:absolute;top:50%;width:5px;height:2px;background:var(--copper-dim);transform:translateY(-50%)}
+  .chip::before{left:-5px}.chip::after{right:-5px}
+  .links-row{margin-top:22px;display:flex;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:13.5px}
+  .links-row a{color:var(--signal)}
+  .links-row a:hover{text-shadow:0 0 10px rgba(70,224,255,.5)}
 
-  /* video */
-  .video{margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
+  .video{margin-top:26px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
   .video video{display:block;width:100%;height:auto}
-  .caption{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:10px}
+  .caption{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:11px}
 
-  /* two-col small projects */
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
   @media(max-width:640px){.grid2{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px;position:relative}
+  .card::before{content:'';position:absolute;top:12px;right:12px;width:8px;height:8px;border:1.5px solid var(--copper-dim);border-radius:50%}
   .card h3{font-size:18px;font-weight:700}
-  .card p{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .card p{color:var(--muted);font-size:14.5px;margin-top:9px}
 
-  /* skills */
-  .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:8px}
+  .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:6px}
   @media(max-width:640px){.skills{grid-template-columns:1fr}}
-  .skills .col b{display:block;font-size:14px;color:var(--accent);font-family:var(--mono);margin-bottom:8px;letter-spacing:.5px}
-  .skills .col span{color:#cdd4dd;font-size:14.5px}
+  .skills .col b{display:block;font-size:13px;color:var(--copper);font-family:var(--mono);margin-bottom:8px;letter-spacing:.5px}
+  .skills .col b::before{content:'└ '}
+  .skills .col span{color:#c8d1ca;font-size:14.5px}
 
-  footer{border-top:1px solid var(--line);padding:44px 0;text-align:center;color:var(--muted)}
-  footer .avail{display:inline-block;font-family:var(--mono);font-size:13px;color:var(--green);border:1px solid #244;background:#0f1a14;padding:6px 14px;border-radius:20px;margin-bottom:18px}
-  footer .fl{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:14px;margin-top:6px}
-  footer a:hover{color:var(--text)}
-  .sig{margin-top:22px;font-size:12.5px;color:#5b636f;font-family:var(--mono)}
+  /* footer as PCB title-block */
+  footer{padding:46px 0;text-align:center;color:var(--muted)}
+  footer .avail{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:13px;color:var(--green);border:1px solid rgba(63,208,138,.3);background:rgba(63,208,138,.06);padding:7px 15px;border-radius:5px;margin-bottom:20px}
+  footer .avail::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
+  footer .fl{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:13.5px;margin-top:6px}
+  footer .fl a:hover{color:var(--signal)}
+  .titleblock{margin:26px auto 0;max-width:420px;border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:11.5px;color:#5f6d63;display:grid;grid-template-columns:1fr 1fr;text-align:left}
+  .titleblock div{padding:8px 12px;border-top:1px solid var(--line)}
+  .titleblock div:nth-child(-n+2){border-top:none}
+  .titleblock div:nth-child(odd){border-right:1px solid var(--line)}
+  .titleblock b{color:var(--copper)}
 </style>
 </head>
 <body>
 
 <header><div class="wrap"><nav>
-  <div class="logo">🦊 Aiden&nbsp;Fox</div>
+  <div class="logo">AIDEN FOX</div>
   <div class="links">
-    <a href="#fennec">Fennec</a>
-    <a href="#gitspider">GitSpider</a>
-    <a href="#more">More</a>
+    <a href="#fennec">U1·Fennec</a>
+    <a href="#gitspider">U2·GitSpider</a>
+    <a href="#more">J1·More</a>
     <a href="#contact">Contact</a>
   </div>
 </nav></div></header>
 
-<div class="wrap">
-
-  <section class="hero">
+<section class="hero">
+  <canvas id="pcb"></canvas>
+  <div class="wrap">
     <div class="kicker">Embedded · Robotics · Full-stack</div>
-    <h1>I build real robots<br>end&#8209;to&#8209;end.</h1>
-    <p class="lead">CAD, custom PCBs, firmware, and autonomy — the whole hardware↔software seam. Currently building <span class="accent">Fennec</span>, an autonomous quadruped, and running <span class="accent">GitSpider</span>, a CI-observability SaaS.</p>
+    <h1>I build real robots<br><span class="em">end&#8209;to&#8209;end.</span></h1>
+    <p class="lead">CAD, custom <b>PCBs</b>, firmware, and autonomy — the whole hardware↔software seam. Currently building <span style="color:var(--copper)">Fennec</span>, an autonomous quadruped, and running <span style="color:var(--copper)">GitSpider</span>, a CI-observability SaaS.</p>
     <p class="meta">Computer Engineering + CS @ USC · grad Dec 2027 · Cardiff / Encinitas, CA</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub ↗</a>
@@ -113,13 +133,16 @@
       <a class="btn" href="mailto:aidenfox2013@gmail.com">Email</a>
       <a class="btn" href="#" id="resumeLink">Résumé (PDF)</a>
     </div>
-  </section>
+  </div>
+</section>
+
+<div class="wrap">
 
   <section class="block" id="fennec">
-    <div class="eyebrow">Flagship · solo build</div>
+    <div class="desig"><span class="pad"></span>U1 · FLAGSHIP · SOLO BUILD</div>
     <div class="proj-head">
       <h2>🦊 Fennec — Autonomous Quadruped</h2>
-      <span class="tag">Phase 1 · hardware bring-up</span>
+      <span class="status">Phase 1 · hardware bring-up</span>
     </div>
     <p class="subtitle">A four-legged robot taken from bare platform to walking autonomy — mechanical, electrical, and software all mine. Built on the open Nova-SM3 platform, redesigned into my own machine.</p>
 
@@ -129,24 +152,24 @@
     <div class="caption">▸ Fennec learning to climb stairs — reinforcement-learning locomotion policy (MuJoCo simulation).</div>
 
     <ul class="feat">
-      <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super — locomotion, calibration & safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
+      <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super — locomotion, calibration &amp; safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
       <li><b>Custom power PCB:</b> designed in KiCad — multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
       <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos — joint mapping, hard-stop limits, watchdog liveness.</li>
       <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop — robotics code that fails safe.</li>
     </ul>
     <div class="chips">
-      <span class="chip">ROS 2</span><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Jetson</span><span class="chip">KiCad</span><span class="chip">Teensy / PlatformIO</span><span class="chip">LiDAR</span><span class="chip">MuJoCo / RL</span><span class="chip">pytest</span>
+      <span class="chip">ROS 2</span><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Jetson</span><span class="chip">KiCad</span><span class="chip">Teensy/PlatformIO</span><span class="chip">LiDAR</span><span class="chip">MuJoCo/RL</span><span class="chip">pytest</span>
     </div>
     <div class="links-row">
-      <a href="https://github.com/Ace2932/Fennec" target="_blank" rel="noopener">Code → github.com/Ace2932/Fennec</a>
+      <a href="https://github.com/Ace2932/Fennec" target="_blank" rel="noopener">→ github.com/Ace2932/Fennec</a>
     </div>
   </section>
 
   <section class="block" id="gitspider">
-    <div class="eyebrow">Shipped & monetized SaaS</div>
+    <div class="desig"><span class="pad"></span>U2 · SHIPPED &amp; MONETIZED SaaS</div>
     <div class="proj-head">
       <h2>🕷️ GitSpider — CI Observability</h2>
-      <span class="tag">live · paying tiers</span>
+      <span class="status">live · paying tiers</span>
     </div>
     <p class="subtitle">Spider-sense for your GitHub Actions: crawls CI runs to catch slowdowns, flaky tests, and wasted minutes, and alerts the moment something drifts. A real product I built and launched.</p>
     <ul class="feat">
@@ -159,17 +182,17 @@
       <span class="chip">Bun</span><span class="chip">Hono</span><span class="chip">TypeScript</span><span class="chip">Postgres</span><span class="chip">GitHub App</span><span class="chip">Stripe</span><span class="chip">Fly.io</span><span class="chip">Docker</span>
     </div>
     <div class="links-row">
-      <a href="https://gitspider.com" target="_blank" rel="noopener">Live → gitspider.com</a>
-      <a href="https://github.com/Ace2932/gitspider-gate-action" target="_blank" rel="noopener">Action → gitspider-gate-action</a>
+      <a href="https://gitspider.com" target="_blank" rel="noopener">→ gitspider.com</a>
+      <a href="https://github.com/Ace2932/gitspider-gate-action" target="_blank" rel="noopener">→ gitspider-gate-action</a>
     </div>
   </section>
 
   <section class="block" id="more">
-    <div class="eyebrow">Also building</div>
+    <div class="desig"><span class="pad"></span>J1 · ALSO BUILDING</div>
     <div class="grid2">
       <div class="card">
         <h3>🔥 BetaRush</h3>
-        <p>Full recruitment-ops platform for a USC chapter: a Google-Sheets stage machine (auto-computes each prospect's next action, cold-lead detection, dup-guarding) + a deployed mobile web app with optimistic UI, stale-while-revalidate caching, and a durable offline write-queue over Apps Script's latency floor. Brother↔prospect matching engine + automated daily digest.</p>
+        <p>Recruitment-ops platform: a Google-Sheets stage machine (auto-computes each prospect's next action, cold-lead detection, dup-guarding) + a deployed mobile web app with optimistic UI, stale-while-revalidate caching, and a durable offline write-queue over Apps Script's latency floor. Matching engine + automated daily digest.</p>
       </div>
       <div class="card">
         <h3>🏗️ Motif</h3>
@@ -179,7 +202,7 @@
   </section>
 
   <section class="block">
-    <div class="eyebrow">Toolbox</div>
+    <div class="desig"><span class="pad"></span>TB1 · TOOLBOX</div>
     <div class="skills">
       <div class="col"><b>Embedded / RT</b><span>C / C++, Teensy, PlatformIO, serial-bus servos, sensor integration, real-time control</span></div>
       <div class="col"><b>Robotics</b><span>ROS 2, Jetson, LiDAR, calibration, RL in sim (MuJoCo), safety systems</span></div>
@@ -191,14 +214,76 @@
 </div>
 
 <footer id="contact"><div class="wrap">
-  <div class="avail">● Seeking Summer 2027 robotics / embedded internships</div>
+  <div class="avail">Seeking Summer 2027 robotics / embedded internships</div>
   <div class="fl">
     <a href="mailto:aidenfox2013@gmail.com">aidenfox2013@gmail.com</a>
     <a href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub</a>
     <a href="https://www.linkedin.com/in/aidenfox/" target="_blank" rel="noopener">LinkedIn</a>
   </div>
-  <div class="sig">Aiden Fox · aidenfox.dev</div>
+  <div class="titleblock">
+    <div><b>SHEET</b> portfolio</div><div><b>REV</b> A</div>
+    <div><b>ENG</b> Aiden Fox</div><div><b>DOMAIN</b> aidenfox.dev</div>
+  </div>
 </div></footer>
 
+<script>
+(function(){
+  var cv=document.getElementById('pcb'), ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1,traces=[],pulses=[],mx=0,my=0,tx=0,ty=0,last=0;
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COPPER='224,165,63';
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function plen(p){var L=0;for(var i=1;i<p.length;i++)L+=Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y);return L;}
+  function ptAt(p,d){for(var i=1;i<p.length;i++){var s=Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y);if(d<=s){var t=s?d/s:0;return{x:p[i-1].x+(p[i].x-p[i-1].x)*t,y:p[i-1].y+(p[i].y-p[i-1].y)*t};}d-=s;}return p[p.length-1];}
+  function build(){
+    traces=[];pulses=[];
+    var G=36, cols=Math.ceil(W/G), rows=Math.ceil(H/G);
+    var count=Math.max(9,Math.floor((W*H)/30000));
+    for(var i=0;i<count;i++){
+      var x=Math.round(rnd(0,cols))*G, y=Math.round(rnd(0,rows))*G;
+      var pts=[{x:x,y:y}], segs=Math.floor(rnd(3,7)), dir=Math.random()<.5?0:1;
+      for(var s=0;s<segs;s++){
+        var len=Math.floor(rnd(1,5))*G*(Math.random()<.5?1:-1);
+        if(dir===0)x+=len;else y+=len;
+        x=Math.max(-G,Math.min(W+G,x));y=Math.max(-G,Math.min(H+G,y));
+        pts.push({x:x,y:y}); dir^=1;
+      }
+      traces.push(pts);
+    }
+    if(!reduced){var np=Math.min(16,Math.floor(count*.55));for(var j=0;j<np;j++)pulses.push(mkPulse());}
+  }
+  function mkPulse(){var t=traces[Math.floor(Math.random()*traces.length)]||[{x:0,y:0}];return{pts:t,L:plen(t),d:Math.random()*plen(t),sp:rnd(38,88),col:Math.random()<.5?'70,224,255':COPPER};}
+  function size(){
+    DPR=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+    build(); if(reduced)draw(0);
+  }
+  function trace(p){ctx.beginPath();ctx.moveTo(p[0].x,p[0].y);for(var i=1;i<p.length;i++)ctx.lineTo(p[i].x,p[i].y);ctx.stroke();}
+  function draw(dt){
+    tx+=(mx-tx)*.06;ty+=(my-ty)*.06;
+    ctx.clearRect(0,0,W,H);ctx.save();ctx.translate(tx,ty);
+    ctx.lineWidth=1.4;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.strokeStyle='rgba('+COPPER+',.14)';ctx.shadowColor='rgba('+COPPER+',.22)';ctx.shadowBlur=6;
+    for(var i=0;i<traces.length;i++)trace(traces[i]);
+    ctx.shadowBlur=0;ctx.fillStyle='rgba('+COPPER+',.45)';
+    for(var k=0;k<traces.length;k++){var e=traces[k][traces[k].length-1],b=traces[k][0];
+      ctx.beginPath();ctx.arc(e.x,e.y,2.3,0,7);ctx.fill();
+      ctx.beginPath();ctx.arc(b.x,b.y,2.3,0,7);ctx.fill();}
+    for(var m=0;m<pulses.length;m++){var pu=pulses[m];
+      pu.d+=pu.sp*dt;if(pu.d>pu.L){var nt=traces[Math.floor(Math.random()*traces.length)];pu.pts=nt;pu.L=plen(nt);pu.d=0;pu.col=Math.random()<.5?'70,224,255':COPPER;}
+      for(var q=0;q<9;q++){var dd=pu.d-q*6;if(dd<0)continue;var pt=ptAt(pu.pts,dd);
+        ctx.globalAlpha=(1-q/9)*.9;ctx.fillStyle='rgb('+pu.col+')';ctx.shadowColor='rgb('+pu.col+')';ctx.shadowBlur=11-q;
+        ctx.beginPath();ctx.arc(pt.x,pt.y,(1-q/11)*2.3,0,7);ctx.fill();}
+      ctx.globalAlpha=1;ctx.shadowBlur=0;}
+    ctx.restore();
+  }
+  function frame(t){var dt=Math.min(.05,(t-last)/1000||0);last=t;draw(dt);requestAnimationFrame(frame);}
+  window.addEventListener('resize',size,{passive:true});
+  window.addEventListener('mousemove',function(e){mx=(e.clientX/window.innerWidth-.5)*-20;my=(e.clientY/window.innerHeight-.5)*-20;},{passive:true});
+  size();
+  if(!reduced)requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>
