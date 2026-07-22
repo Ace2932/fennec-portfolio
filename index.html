@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aiden Fox — Embedded & Robotics Engineer</title>
+<meta name="description" content="Aiden Fox — Computer Engineering + CS @ USC. I build real robots end to end: CAD, PCBs, firmware, and autonomy. Creator of Fennec (autonomous quadruped) and GitSpider (CI observability SaaS).">
+<meta property="og:title" content="Aiden Fox — Embedded & Robotics Engineer">
+<meta property="og:description" content="I build real robots end to end — CAD, PCBs, firmware, and autonomy.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aidenfox.dev">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
+<style>
+  :root{
+    --bg:#0b0d10; --panel:#14171c; --panel2:#1b1f26; --line:#262b33;
+    --text:#e7eaee; --muted:#9aa4b2; --accent:#f0883e; --accent2:#5aa6ff; --green:#54c98b;
+    --mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  .mono{font-family:var(--mono)}
+  .accent{color:var(--accent)}
+
+  /* nav */
+  header{position:sticky;top:0;z-index:10;background:rgba(11,13,16,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:58px}
+  nav .logo{font-weight:800;font-size:16px;letter-spacing:.3px}
+  nav .links{display:flex;gap:22px;font-size:14px;color:var(--muted)}
+  nav .links a:hover{color:var(--text)}
+  @media(max-width:560px){nav .links{display:none}}
+
+  /* hero */
+  .hero{padding:88px 0 64px}
+  .hero .kicker{font-family:var(--mono);color:var(--accent);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
+  .hero h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacing:-1px}
+  .hero p.lead{margin-top:20px;font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:640px}
+  .hero .meta{margin-top:16px;color:var(--muted);font-size:15px}
+  .cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--panel);transition:.15s}
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);color:#160c04;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.08)}
+
+  /* sections */
+  section.block{padding:56px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
+  .proj-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  h2{font-size:clamp(24px,4vw,32px);font-weight:800;letter-spacing:-.5px}
+  .tag{font-family:var(--mono);font-size:12px;color:var(--green);border:1px solid #244; background:#0f1a14;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .subtitle{color:var(--muted);margin-top:8px;font-size:17px}
+
+  ul.feat{list-style:none;margin:20px 0 0;display:grid;gap:11px}
+  ul.feat li{position:relative;padding-left:24px;color:#cdd4dd;font-size:15.5px}
+  ul.feat li::before{content:'▹';position:absolute;left:0;color:var(--accent);font-size:15px}
+  ul.feat li b{color:var(--text)}
+
+  .chips{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);padding:4px 10px;border-radius:6px}
+  .links-row{margin-top:20px;display:flex;flex-wrap:wrap;gap:16px;font-size:14px}
+  .links-row a{color:var(--accent2);border-bottom:1px solid transparent;padding-bottom:1px}
+  .links-row a:hover{border-color:var(--accent2)}
+
+  /* video */
+  .video{margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
+  .video video{display:block;width:100%;height:auto}
+  .caption{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:10px}
+
+  /* two-col small projects */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card h3{font-size:18px;font-weight:700}
+  .card p{color:var(--muted);font-size:14.5px;margin-top:8px}
+
+  /* skills */
+  .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:8px}
+  @media(max-width:640px){.skills{grid-template-columns:1fr}}
+  .skills .col b{display:block;font-size:14px;color:var(--accent);font-family:var(--mono);margin-bottom:8px;letter-spacing:.5px}
+  .skills .col span{color:#cdd4dd;font-size:14.5px}
+
+  footer{border-top:1px solid var(--line);padding:44px 0;text-align:center;color:var(--muted)}
+  footer .avail{display:inline-block;font-family:var(--mono);font-size:13px;color:var(--green);border:1px solid #244;background:#0f1a14;padding:6px 14px;border-radius:20px;margin-bottom:18px}
+  footer .fl{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:14px;margin-top:6px}
+  footer a:hover{color:var(--text)}
+  .sig{margin-top:22px;font-size:12.5px;color:#5b636f;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<header><div class="wrap"><nav>
+  <div class="logo">🦊 Aiden&nbsp;Fox</div>
+  <div class="links">
+    <a href="#fennec">Fennec</a>
+    <a href="#gitspider">GitSpider</a>
+    <a href="#more">More</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav></div></header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Embedded · Robotics · Full-stack</div>
+    <h1>I build real robots<br>end&#8209;to&#8209;end.</h1>
+    <p class="lead">CAD, custom PCBs, firmware, and autonomy — the whole hardware↔software seam. Currently building <span class="accent">Fennec</span>, an autonomous quadruped, and running <span class="accent">GitSpider</span>, a CI-observability SaaS.</p>
+    <p class="meta">Computer Engineering + CS @ USC · grad Dec 2027 · Cardiff / Encinitas, CA</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="https://www.linkedin.com/in/aidenfox/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn" href="mailto:aidenfox2013@gmail.com">Email</a>
+      <a class="btn" href="#" id="resumeLink">Résumé (PDF)</a>
+    </div>
+  </section>
+
+  <section class="block" id="fennec">
+    <div class="eyebrow">Flagship · solo build</div>
+    <div class="proj-head">
+      <h2>🦊 Fennec — Autonomous Quadruped</h2>
+      <span class="tag">Phase 1 · hardware bring-up</span>
+    </div>
+    <p class="subtitle">A four-legged robot taken from bare platform to walking autonomy — mechanical, electrical, and software all mine. Built on the open Nova-SM3 platform, redesigned into my own machine.</p>
+
+    <div class="video">
+      <video src="assets/fennec-demo.mp4" autoplay muted loop playsinline controls></video>
+    </div>
+    <div class="caption">▸ Fennec learning to climb stairs — reinforcement-learning locomotion policy (MuJoCo simulation).</div>
+
+    <ul class="feat">
+      <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super — locomotion, calibration & safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
+      <li><b>Custom power PCB:</b> designed in KiCad — multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
+      <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos — joint mapping, hard-stop limits, watchdog liveness.</li>
+      <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop — robotics code that fails safe.</li>
+    </ul>
+    <div class="chips">
+      <span class="chip">ROS 2</span><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Jetson</span><span class="chip">KiCad</span><span class="chip">Teensy / PlatformIO</span><span class="chip">LiDAR</span><span class="chip">MuJoCo / RL</span><span class="chip">pytest</span>
+    </div>
+    <div class="links-row">
+      <a href="https://github.com/Ace2932/Fennec" target="_blank" rel="noopener">Code → github.com/Ace2932/Fennec</a>
+    </div>
+  </section>
+
+  <section class="block" id="gitspider">
+    <div class="eyebrow">Shipped & monetized SaaS</div>
+    <div class="proj-head">
+      <h2>🕷️ GitSpider — CI Observability</h2>
+      <span class="tag">live · paying tiers</span>
+    </div>
+    <p class="subtitle">Spider-sense for your GitHub Actions: crawls CI runs to catch slowdowns, flaky tests, and wasted minutes, and alerts the moment something drifts. A real product I built and launched.</p>
+    <ul class="feat">
+      <li><b>Full stack:</b> Bun + Hono (server + SSR JSX), Postgres 16 (30-day raw events → daily rollups kept forever), deployed on Fly.io.</li>
+      <li><b>GitHub App integration</b> — reads Actions/Contents/Metadata, comments on PRs, never touches your code.</li>
+      <li><b>Stripe subscriptions</b> (Team / Org tiers, 14-day trial), Slack alert webhooks, public repo scorecards + badges.</li>
+      <li><b>Published GitHub Action</b> — a CI-config-hygiene ratchet that fails builds when cache/timeout/concurrency waste creeps back in.</li>
+    </ul>
+    <div class="chips">
+      <span class="chip">Bun</span><span class="chip">Hono</span><span class="chip">TypeScript</span><span class="chip">Postgres</span><span class="chip">GitHub App</span><span class="chip">Stripe</span><span class="chip">Fly.io</span><span class="chip">Docker</span>
+    </div>
+    <div class="links-row">
+      <a href="https://gitspider.com" target="_blank" rel="noopener">Live → gitspider.com</a>
+      <a href="https://github.com/Ace2932/gitspider-gate-action" target="_blank" rel="noopener">Action → gitspider-gate-action</a>
+    </div>
+  </section>
+
+  <section class="block" id="more">
+    <div class="eyebrow">Also building</div>
+    <div class="grid2">
+      <div class="card">
+        <h3>🔥 BetaRush</h3>
+        <p>Full recruitment-ops platform for a USC chapter: a Google-Sheets stage machine (auto-computes each prospect's next action, cold-lead detection, dup-guarding) + a deployed mobile web app with optimistic UI, stale-while-revalidate caching, and a durable offline write-queue over Apps Script's latency floor. Brother↔prospect matching engine + automated daily digest.</p>
+      </div>
+      <div class="card">
+        <h3>🏗️ Motif</h3>
+        <p>Interning at Motif, an AEC (architecture, engineering &amp; construction) company — building on their AI agents platform.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">Toolbox</div>
+    <div class="skills">
+      <div class="col"><b>Embedded / RT</b><span>C / C++, Teensy, PlatformIO, serial-bus servos, sensor integration, real-time control</span></div>
+      <div class="col"><b>Robotics</b><span>ROS 2, Jetson, LiDAR, calibration, RL in sim (MuJoCo), safety systems</span></div>
+      <div class="col"><b>Hardware</b><span>KiCad (schematic + layout, DRC/ERC), power distribution, INA226 telemetry, CAD / 3D-print</span></div>
+      <div class="col"><b>Software</b><span>Python, TypeScript / JavaScript, Postgres, testing (pytest), Git, deploy (Fly / Vercel)</span></div>
+    </div>
+  </section>
+
+</div>
+
+<footer id="contact"><div class="wrap">
+  <div class="avail">● Seeking Summer 2027 robotics / embedded internships</div>
+  <div class="fl">
+    <a href="mailto:aidenfox2013@gmail.com">aidenfox2013@gmail.com</a>
+    <a href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/aidenfox/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="sig">Aiden Fox · aidenfox.dev</div>
+</div></footer>
+
+</body>
+</html>
