@@ -20,6 +20,9 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Aiden Fox","url":"https://aidenfox.dev","jobTitle":"Computer Engineering & Computer Science student — embedded & robotics","affiliation":{"@type":"CollegeOrUniversity","name":"University of Southern California"},"sameAs":["https://github.com/Ace2932","https://www.linkedin.com/in/aidenfox/"],"knowsAbout":["Embedded systems","Robotics","ROS 2","PCB design","Real-time firmware","Reinforcement learning"]}
+</script>
 <style>
   :root{
     --board:#070b09; --board2:#0c120f; --panel:#0e1512; --line:#1b2620;
@@ -118,6 +121,8 @@
   #spine{position:absolute;top:0;left:0;pointer-events:none;z-index:1}
   @media(max-width:1099px){#spine{display:none}}
   @media(prefers-reduced-motion:reduce){#spine .pulse{display:none}}
+  nav .links a.active{color:var(--copper);text-shadow:0 0 9px rgba(224,165,63,.55)}
+  .kicker.typing::after{content:'▮';margin-left:5px;animation:blink 1s steps(1) infinite}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
   @media(max-width:640px){.grid2{grid-template-columns:1fr}}
@@ -219,6 +224,26 @@
         <figcaption class="caption">▸ Logic board — drag to spin, scroll to zoom. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
       </figure>
     </div>
+
+    <figure class="pcbshot" style="margin-top:18px">
+      <div class="mod">
+        <model-viewer src="assets/leg.glb" poster="assets/leg-poster.webp" loading="lazy" style="aspect-ratio:16/7"
+          alt="Interactive 3D model of the Fennec leg v6 assembly, folded print-check pose"
+          camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="55deg 60deg auto"
+          shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+        <span class="ds">DS4 · LEG v6 ASSEMBLY</span>
+      </div>
+      <figcaption class="caption">▸ Leg v6 — the 3D-printed leg I designed (shoulder → femur → tibia, STS3215 horn interfaces, roller foot), shown in its folded print-check pose. Drag to inspect.</figcaption>
+    </figure>
+
+    <!-- FAB PHOTOS: enable when assembled hardware photos exist.
+    <div class="grid2" style="margin-top:18px">
+      <figure class="pcbshot"><div class="mod"><img src="assets/photo-boards.jpg" alt="Fabbed power and logic boards" loading="lazy"><span class="ds">P1 · AS FABBED</span></div>
+        <figcaption class="caption">▸ The fabbed boards, assembled and under test.</figcaption></figure>
+      <figure class="pcbshot"><div class="mod"><img src="assets/photo-leg.jpg" alt="Printed leg v6 hardware" loading="lazy"><span class="ds">P2 · AS PRINTED</span></div>
+        <figcaption class="caption">▸ Printed leg v6 with servos installed.</figcaption></figure>
+    </div>
+    -->
     <script type="module" src="assets/model-viewer.min.js"></script>
 
     <div class="chips">
@@ -397,6 +422,35 @@
   window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,250);},{passive:true});
   window.addEventListener('load',build);
   build();
+})();
+
+/* --- scrollspy: light up the active designator in the nav --- */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('nav .links a[href^="#"]'));
+  var targets=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  var ticking=false;
+  function update(){
+    ticking=false;
+    var active=-1;
+    targets.forEach(function(t,i){if(t&&t.getBoundingClientRect().top<=130)active=i;});
+    links.forEach(function(a,i){a.classList.toggle('active',i===active);});
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
+  update();
+})();
+
+/* --- hero kicker boot-log typing --- */
+(function(){
+  var k=document.querySelector('.kicker');
+  if(!k||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var full=k.textContent.trim(), i=0;
+  k.style.minHeight=k.offsetHeight+'px';
+  k.textContent='';k.classList.add('typing');
+  (function step(){
+    k.textContent=full.slice(0,++i);
+    if(i<full.length)setTimeout(step,26);
+    else k.classList.remove('typing');
+  })();
 })();
 </script>
 </body>
