@@ -81,6 +81,8 @@
   .video{margin-top:26px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
   .video video{display:block;width:100%;height:auto}
   .caption{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:11px}
+  .pcbshot{margin:0}
+  .pcbshot img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:var(--board2);box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
   @media(max-width:640px){.grid2{grid-template-columns:1fr}}
@@ -157,6 +159,18 @@
       <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos — joint mapping, hard-stop limits, watchdog liveness.</li>
       <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop — robotics code that fails safe.</li>
     </ul>
+
+    <div class="grid2" style="margin-top:26px">
+      <figure class="pcbshot">
+        <img src="assets/pcb-power.webp" alt="KiCad 3D render of the Fennec multi-rail power distribution PCB" loading="lazy">
+        <figcaption class="caption">▸ Power board v2 (KiCad render) — XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
+      </figure>
+      <figure class="pcbshot">
+        <img src="assets/pcb-logic.webp" alt="KiCad 3D render of the Fennec logic board, a Teensy 4.1 carrier" loading="lazy">
+        <figcaption class="caption">▸ Logic board (KiCad render) — Teensy 4.1 bus-master carrier: harness breakouts and the IDC telemetry link to the power board.</figcaption>
+      </figure>
+    </div>
+
     <div class="chips">
       <span class="chip">ROS 2</span><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Jetson</span><span class="chip">KiCad</span><span class="chip">Teensy/PlatformIO</span><span class="chip">LiDAR</span><span class="chip">MuJoCo/RL</span><span class="chip">pytest</span>
     </div>
