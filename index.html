@@ -82,7 +82,8 @@
   .video video{display:block;width:100%;height:auto}
   .caption{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:11px}
   .pcbshot{margin:0}
-  .pcbshot img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:var(--board2);box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
+  .pcbshot img,.pcbshot model-viewer{display:block;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--board2);box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
+  .pcbshot model-viewer{aspect-ratio:4/3;height:auto;--poster-color:transparent}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
   @media(max-width:640px){.grid2{grid-template-columns:1fr}}
@@ -162,14 +163,21 @@
 
     <div class="grid2" style="margin-top:26px">
       <figure class="pcbshot">
-        <img src="assets/pcb-power.webp" alt="KiCad 3D render of the Fennec multi-rail power distribution PCB" loading="lazy">
-        <figcaption class="caption">▸ Power board v2 (KiCad render) — XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
+        <model-viewer src="assets/pcb-power.glb" poster="assets/pcb-power.webp" reveal="interaction"
+          alt="Interactive 3D model of the Fennec multi-rail power distribution PCB"
+          camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
+          shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+        <figcaption class="caption">▸ Power board v2 — tap to spin it. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
       </figure>
       <figure class="pcbshot">
-        <img src="assets/pcb-logic.webp" alt="KiCad 3D render of the Fennec logic board, a Teensy 4.1 carrier" loading="lazy">
-        <figcaption class="caption">▸ Logic board (KiCad render) — Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
+        <model-viewer src="assets/pcb-logic.glb" poster="assets/pcb-logic.webp" reveal="interaction"
+          alt="Interactive 3D model of the Fennec logic board, a Teensy 4.1 carrier"
+          camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
+          shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+        <figcaption class="caption">▸ Logic board — tap to spin it. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
       </figure>
     </div>
+    <script type="module" src="assets/model-viewer.min.js"></script>
 
     <div class="chips">
       <span class="chip">ROS 2</span><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Jetson</span><span class="chip">KiCad</span><span class="chip">Teensy/PlatformIO</span><span class="chip">LiDAR</span><span class="chip">MuJoCo/RL</span><span class="chip">pytest</span>
