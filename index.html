@@ -9,7 +9,17 @@
 <meta property="og:description" content="I build real robots end to end — CAD, PCBs, firmware, and autonomy.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aidenfox.dev">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
+<meta property="og:image" content="https://aidenfox.dev/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aiden Fox — Embedded & Robotics Engineer">
+<meta name="twitter:description" content="I build real robots end to end — CAD, PCBs, firmware, and autonomy.">
+<meta name="twitter:image" content="https://aidenfox.dev/assets/og.png">
+<meta name="theme-color" content="#070b09">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
   :root{
     --board:#070b09; --board2:#0c120f; --panel:#0e1512; --line:#1b2620;
@@ -85,6 +95,30 @@
   .pcbshot img,.pcbshot model-viewer{display:block;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--board2);box-shadow:0 0 0 1px rgba(224,165,63,.08),0 14px 40px rgba(0,0,0,.5)}
   .pcbshot model-viewer{aspect-ratio:4/3;height:auto;--poster-color:transparent}
 
+  /* --- "site as a PCB": mounted display-module chrome --- */
+  section.block,#hardware{scroll-margin-top:70px}
+  .mod{position:relative}
+  .mod::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:10px;
+    background:
+      radial-gradient(circle at 11px 11px, #070b09 2.4px, rgba(224,165,63,.55) 3.2px, transparent 4.8px),
+      radial-gradient(circle at calc(100% - 11px) 11px, #070b09 2.4px, rgba(224,165,63,.55) 3.2px, transparent 4.8px),
+      radial-gradient(circle at 11px calc(100% - 11px), #070b09 2.4px, rgba(224,165,63,.55) 3.2px, transparent 4.8px),
+      radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), #070b09 2.4px, rgba(224,165,63,.55) 3.2px, transparent 4.8px)}
+  .mod::after{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:8px;height:36px;z-index:3;pointer-events:none;
+    background:
+      repeating-linear-gradient(180deg, rgba(224,165,63,.8) 0 2px, transparent 2px 5.2px) 0 2px/3px calc(100% - 4px) no-repeat,
+      linear-gradient(#141d18,#141d18) 3px 0/5px 100% no-repeat;
+    border-radius:0 3px 3px 0}
+  .ds{position:absolute;top:10px;left:14px;z-index:4;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:1.4px;color:var(--copper);
+    background:rgba(7,11,9,.78);border:1px solid var(--line);padding:2.5px 9px;border-radius:3px;pointer-events:none}
+  .card::after{content:'';position:absolute;inset:16px -5px;pointer-events:none;
+    background:
+      repeating-linear-gradient(180deg, var(--copper-dim) 0 5px, transparent 5px 13px) left top/4px 100% no-repeat,
+      repeating-linear-gradient(180deg, var(--copper-dim) 0 5px, transparent 5px 13px) right top/4px 100% no-repeat}
+  #spine{position:absolute;top:0;left:0;pointer-events:none;z-index:1}
+  @media(max-width:1099px){#spine{display:none}}
+  @media(prefers-reduced-motion:reduce){#spine .pulse{display:none}}
+
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
   @media(max-width:640px){.grid2{grid-template-columns:1fr}}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px;position:relative}
@@ -117,6 +151,7 @@
   <div class="logo">AIDEN FOX</div>
   <div class="links">
     <a href="#fennec">U1·Fennec</a>
+    <a href="#hardware">DS·Hardware</a>
     <a href="#gitspider">U2·GitSpider</a>
     <a href="#more">J1·More</a>
     <a href="#contact">Contact</a>
@@ -149,8 +184,9 @@
     </div>
     <p class="subtitle">A four-legged robot taken from bare platform to walking autonomy — mechanical, electrical, and software all mine. Built on the open Nova-SM3 platform, redesigned into my own machine.</p>
 
-    <div class="video">
+    <div class="video mod">
       <video src="assets/fennec-demo.mp4" autoplay muted loop playsinline controls></video>
+      <span class="ds">DS1 · RL LOCOMOTION</span>
     </div>
     <div class="caption">▸ Fennec learning to climb stairs — reinforcement-learning locomotion policy (MuJoCo simulation).</div>
 
@@ -161,19 +197,25 @@
       <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop — robotics code that fails safe.</li>
     </ul>
 
-    <div class="grid2" style="margin-top:26px">
+    <div class="grid2" id="hardware" style="margin-top:26px">
       <figure class="pcbshot">
-        <model-viewer src="assets/pcb-power.glb" poster="assets/pcb-power.webp" loading="lazy"
-          alt="Interactive 3D model of the Fennec multi-rail power distribution PCB"
-          camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
-          shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+        <div class="mod">
+          <model-viewer src="assets/pcb-power.glb" poster="assets/pcb-power.webp" loading="lazy"
+            alt="Interactive 3D model of the Fennec multi-rail power distribution PCB"
+            camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
+            shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+          <span class="ds">DS2 · POWER BOARD</span>
+        </div>
         <figcaption class="caption">▸ Power board v2 — drag to spin, scroll to zoom. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
       </figure>
       <figure class="pcbshot">
-        <model-viewer src="assets/pcb-logic.glb" poster="assets/pcb-logic.webp" loading="lazy"
-          alt="Interactive 3D model of the Fennec logic board, a Teensy 4.1 carrier"
-          camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
-          shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+        <div class="mod">
+          <model-viewer src="assets/pcb-logic.glb" poster="assets/pcb-logic.webp" loading="lazy"
+            alt="Interactive 3D model of the Fennec logic board, a Teensy 4.1 carrier"
+            camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
+            shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
+          <span class="ds">DS3 · LOGIC BOARD</span>
+        </div>
         <figcaption class="caption">▸ Logic board — drag to spin, scroll to zoom. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
       </figure>
     </div>
@@ -305,6 +347,56 @@
   window.addEventListener('mousemove',function(e){mx=(e.clientX/window.innerWidth-.5)*-20;my=(e.clientY/window.innerHeight-.5)*-20;},{passive:true});
   size();
   if(!reduced)requestAnimationFrame(frame);
+})();
+
+/* --- copper trace spine: routes the section "components" to one bus --- */
+(function(){
+  var SVG='http://www.w3.org/2000/svg', svg=null, t=null;
+  function el(n,a){var e=document.createElementNS(SVG,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function build(){
+    if(svg){svg.remove();svg=null;}
+    if(window.innerWidth<1100)return;
+    var wrap=document.querySelector('body > .wrap');
+    var pads=document.querySelectorAll('section.block .desig .pad');
+    if(!wrap||!pads.length)return;
+    var wl=wrap.getBoundingClientRect().left+window.scrollX;
+    var sx=wl-34;
+    if(sx<14)return;
+    var hero=document.querySelector('.hero');
+    var y0=hero.getBoundingClientRect().bottom+window.scrollY+30;
+    var docH=document.documentElement.scrollHeight;
+    var pts=[];
+    pads.forEach(function(p){
+      var r=p.getBoundingClientRect();
+      pts.push({x:r.left+window.scrollX,y:r.top+window.scrollY+r.height/2});
+    });
+    var y1=pts[pts.length-1].y+120;
+    svg=el('svg',{id:'spine',width:wl,height:docH,viewBox:'0 0 '+wl+' '+docH});
+    var g=el('g',{stroke:'rgba(224,165,63,.32)','stroke-width':'1.6',fill:'none','stroke-linecap':'round'});
+    var spinePath='M'+sx+' '+y0+' V'+y1;
+    g.appendChild(el('path',{d:spinePath}));
+    pts.forEach(function(pt){
+      var jy=pt.y-14;
+      g.appendChild(el('path',{d:'M'+sx+' '+jy+' L'+(sx+14)+' '+pt.y+' H'+(pt.x-7)}));
+    });
+    svg.appendChild(g);
+    var vg=el('g',{fill:'rgba(224,165,63,.55)'});
+    pts.forEach(function(pt){
+      var v=el('circle',{cx:sx,cy:pt.y-14,r:'3'});
+      var v2=el('circle',{cx:sx,cy:pt.y-14,r:'1.3',fill:'#070b09'});
+      vg.appendChild(v);vg.appendChild(v2);
+    });
+    svg.appendChild(vg);
+    for(var i=0;i<2;i++){
+      var c=el('circle',{'class':'pulse',r:'2.4',fill:i?'#46e0ff':'#e0a53f',opacity:'.9'});
+      var m=el('animateMotion',{dur:(14+i*7)+'s',repeatCount:'indefinite',begin:(i*5)+'s',path:spinePath.replace(/^M/,'M ').replace('V',' L'+sx+' ')});
+      c.appendChild(m);svg.appendChild(c);
+    }
+    document.body.appendChild(svg);
+  }
+  window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,250);},{passive:true});
+  window.addEventListener('load',build);
+  build();
 })();
 </script>
 </body>

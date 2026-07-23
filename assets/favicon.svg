@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- chip package -->
+  <rect x="10" y="10" width="44" height="44" rx="7" fill="#0e1512" stroke="#e0a53f" stroke-width="2.5"/>
+  <!-- copper edge pads -->
+  <g fill="#e0a53f">
+    <rect x="20" y="3" width="5" height="7" rx="1.5"/><rect x="29.5" y="3" width="5" height="7" rx="1.5"/><rect x="39" y="3" width="5" height="7" rx="1.5"/>
+    <rect x="20" y="54" width="5" height="7" rx="1.5"/><rect x="29.5" y="54" width="5" height="7" rx="1.5"/><rect x="39" y="54" width="5" height="7" rx="1.5"/>
+    <rect x="3" y="20" width="7" height="5" rx="1.5"/><rect x="3" y="29.5" width="7" height="5" rx="1.5"/><rect x="3" y="39" width="7" height="5" rx="1.5"/>
+    <rect x="54" y="20" width="7" height="5" rx="1.5"/><rect x="54" y="29.5" width="7" height="5" rx="1.5"/><rect x="54" y="39" width="7" height="5" rx="1.5"/>
+  </g>
+  <!-- fox head: ears + face + snout -->
+  <g fill="#e8862e">
+    <path d="M19 21 L27 27 L20 31 Z"/>
+    <path d="M45 21 L37 27 L44 31 Z"/>
+    <path d="M20 30 C20 25 26 24 32 24 C38 24 44 25 44 30 C44 38 37 41 32 46 C27 41 20 38 20 30 Z"/>
+  </g>
+  <!-- white cheeks + dark nose -->
+  <path d="M24 33 C26 30 30 31 32 34 C34 31 38 30 40 33 C39 38 34 40 32 43 C30 40 25 38 24 33 Z" fill="#f5efe6"/>
+  <circle cx="32" cy="42.5" r="2" fill="#1a120a"/>
+</svg>
