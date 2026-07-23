@@ -163,18 +163,18 @@
 
     <div class="grid2" style="margin-top:26px">
       <figure class="pcbshot">
-        <model-viewer src="assets/pcb-power.glb" poster="assets/pcb-power.webp" reveal="interaction"
+        <model-viewer src="assets/pcb-power.glb" poster="assets/pcb-power.webp" loading="lazy"
           alt="Interactive 3D model of the Fennec multi-rail power distribution PCB"
           camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
           shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
-        <figcaption class="caption">▸ Power board v2 — tap to spin it. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
+        <figcaption class="caption">▸ Power board v2 — drag to spin, scroll to zoom. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
       </figure>
       <figure class="pcbshot">
-        <model-viewer src="assets/pcb-logic.glb" poster="assets/pcb-logic.webp" reveal="interaction"
+        <model-viewer src="assets/pcb-logic.glb" poster="assets/pcb-logic.webp" loading="lazy"
           alt="Interactive 3D model of the Fennec logic board, a Teensy 4.1 carrier"
           camera-controls auto-rotate auto-rotate-delay="1500" camera-orbit="25deg 65deg auto"
           shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
-        <figcaption class="caption">▸ Logic board — tap to spin it. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
+        <figcaption class="caption">▸ Logic board — drag to spin, scroll to zoom. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
       </figure>
     </div>
     <script type="module" src="assets/model-viewer.min.js"></script>
