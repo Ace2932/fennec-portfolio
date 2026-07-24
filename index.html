@@ -266,7 +266,7 @@
     <p class="subtitle">A desktop 6-DOF arm on the same Feetech serial bus as Fennec: my testbed for vision-language-action policies and manipulation, from kinematics to voice command.</p>
     <ul class="feat">
       <li><b>Drive:</b> 6× Feetech STS3215 over a 1 Mbaud TTL bus from a Raspberry Pi.</li>
-      <li><b>Learning:</b> fine-tuned a SmolVLA visuomotor policy on 105 demos across 11 tasks; local speech-to-text for voice-commanded manipulation.</li>
+      <li><b>Learning:</b> fine-tuned a SmolVLA visuomotor policy on 105 demos across 11 tasks; local faster-whisper speech-to-text for voice-commanded manipulation, fully self-hosted with no cloud round-trip.</li>
       <li><b>Kinematics:</b> closed-form IK validated in MuJoCo with 0.0 mm forward-kinematics round-trip error.</li>
     </ul>
 
@@ -314,14 +314,19 @@
       </div>
       <div class="card">
         <h3>🏗️ Motif</h3>
-        <p>Interning at Motif, an AEC (architecture, engineering &amp; construction) company, building on their AI agents platform.</p>
+        <p>Two internships at Motif (AEC AI platform) shipping production: architected a deep-research agent platform from 0 to 1, scaled a SageMaker vision pipeline across 22,000+ images (~65% faster), and productionized a fault-tolerant Lambda + SQS backend.</p>
       </div>
       <div class="card">
         <h3>🐍 FPGA Snake</h3>
         <p>Real-time Snake implemented entirely in Verilog hardware on a Nexys A7: game FSM, VGA driver, SPI master, clocking, and 7-segment display across six submodules. LFSR fruit placement, per-clock combinational collision detection, accelerometer tilt control over SPI. No CPU, no software.</p>
         <!-- DS6 slot: drop assets/snake-demo.mp4 + poster, then swap this card for a video module -->
       </div>
+      <div class="card">
+        <h3>📷 Advanced Image Robotics</h3>
+        <p>Product engineering intern: shipped embedded software across 26 production AIR One broadcast cameras, with Jetson-based multi-axis control, a startup animation system, and stability checks.</p>
+      </div>
     </div>
+    <div class="caption" style="margin-top:16px">▸ Prior: trained ML models used in the 2024 Super Bowl broadcast (2020CV) · Snap-recognized AR lenses · co-lead programmer, FTC robotics · Stanford summer session '23.</div>
   </section>
 
   <section class="block">
