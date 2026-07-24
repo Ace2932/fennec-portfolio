@@ -157,6 +157,7 @@
   <div class="links">
     <a href="#fennec">U1·Fennec</a>
     <a href="#hardware">DS·Hardware</a>
+    <a href="#arm">A1·Arm</a>
     <a href="#gitspider">U2·GitSpider</a>
     <a href="#more">J1·More</a>
     <a href="#contact">Contact</a>
@@ -198,8 +199,9 @@
     <ul class="feat">
       <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super: locomotion, calibration &amp; safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
       <li><b>Custom power PCB:</b> designed in KiCad: multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
-      <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos: joint mapping, hard-stop limits, watchdog liveness.</li>
-      <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop. Robotics code that fails safe.</li>
+      <li><b>Firmware:</b> 200 Hz hard-real-time loop on a Teensy 4.1 (Cortex-M7) with <b>1 µs p99 scheduling jitter</b>, 100× under the acceptance gate. From-scratch STS3215 half-duplex bus driver (74HC125 timing verified on a logic analyzer), software watchdog, latency histograms over USB-CDC.</li>
+      <li><b>Perception:</b> LIDAR-inertial SLAM (Unitree L2 + POINT-LIO) on the Jetson. Found and patched an IMU-bridge bug in the vendor SDK and shipped a <b>public fork</b> restoring the 250 Hz IMU stream.</li>
+      <li><b>Safety-first + tested:</b> latching E-stop + battery-low FSM in firmware; pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop. Robotics code that fails safe.</li>
     </ul>
 
     <div class="grid2" id="hardware" style="margin-top:26px">
@@ -251,6 +253,24 @@
     </div>
     <div class="links-row">
       <a href="https://github.com/Ace2932/Fennec" target="_blank" rel="noopener">→ github.com/Ace2932/Fennec</a>
+      <a href="https://github.com/Ace2932/unilidar_sdk2" target="_blank" rel="noopener">→ unilidar_sdk2 fork (IMU fix)</a>
+    </div>
+  </section>
+
+  <section class="block" id="arm">
+    <div class="desig"><span class="pad"></span>A1 · MANIPULATION TESTBED</div>
+    <div class="proj-head">
+      <h2>🦾 6-DOF Arm · VLA Manipulation</h2>
+      <span class="status">policy trained · 11 tasks</span>
+    </div>
+    <p class="subtitle">A desktop 6-DOF arm on the same Feetech serial bus as Fennec: my testbed for vision-language-action policies and manipulation, from kinematics to voice command.</p>
+    <ul class="feat">
+      <li><b>Drive:</b> 6× Feetech STS3215 over a 1 Mbaud TTL bus from a Raspberry Pi.</li>
+      <li><b>Learning:</b> fine-tuned a SmolVLA visuomotor policy on 105 demos across 11 tasks; local speech-to-text for voice-commanded manipulation.</li>
+      <li><b>Kinematics:</b> closed-form IK validated in MuJoCo with 0.0 mm forward-kinematics round-trip error.</li>
+    </ul>
+    <div class="chips">
+      <span class="chip">Raspberry Pi</span><span class="chip">SmolVLA</span><span class="chip">PyTorch</span><span class="chip">MuJoCo</span><span class="chip">TTL bus</span><span class="chip">Python</span>
     </div>
   </section>
 
@@ -293,9 +313,9 @@
   <section class="block">
     <div class="desig"><span class="pad"></span>TB1 · TOOLBOX</div>
     <div class="skills">
-      <div class="col"><b>Embedded / RT</b><span>C / C++, Teensy, PlatformIO, serial-bus servos, sensor integration, real-time control</span></div>
-      <div class="col"><b>Robotics</b><span>ROS 2, Jetson, LiDAR, calibration, RL in sim (MuJoCo), safety systems</span></div>
-      <div class="col"><b>Hardware</b><span>KiCad (schematic + layout, DRC/ERC), power distribution, INA226 telemetry, CAD / 3D-print</span></div>
+      <div class="col"><b>Embedded / RT</b><span>Bare-metal C / C++, Teensy (Cortex-M7), ISR control loops, half-duplex bus drivers, I2C · SPI · UART · USB-CDC · Ethernet (DDS), watchdogs, oscilloscope + logic analyzer</span></div>
+      <div class="col"><b>Robotics</b><span>ROS 2 + micro-ROS, Jetson, LIDAR-inertial SLAM (POINT-LIO), calibration, RL in sim (MuJoCo), VLA policies (SmolVLA), safety systems</span></div>
+      <div class="col"><b>Hardware</b><span>KiCad (schematic + layout, DRC/ERC), multi-rail power, buck converters, INA226 telemetry, FPGA / Verilog, digital logic, CAD / 3D-print</span></div>
       <div class="col"><b>Software</b><span>Python, TypeScript / JavaScript, Postgres, testing (pytest), Git, deploy (Fly / Vercel)</span></div>
     </div>
   </section>
