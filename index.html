@@ -3,25 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aiden Fox — Embedded & Robotics Engineer</title>
-<meta name="description" content="Aiden Fox — Computer Engineering + CS @ USC. I build real robots end to end: CAD, PCBs, firmware, and autonomy. Creator of Fennec (autonomous quadruped) and GitSpider (CI observability SaaS).">
-<meta property="og:title" content="Aiden Fox — Embedded & Robotics Engineer">
-<meta property="og:description" content="I build real robots end to end — CAD, PCBs, firmware, and autonomy.">
+<title>Aiden Fox · Embedded & Robotics Engineer</title>
+<meta name="description" content="Aiden Fox: Computer Engineering + CS @ USC. I build real robots end to end: CAD, PCBs, firmware, and autonomy. Creator of Fennec (autonomous quadruped) and GitSpider (CI observability SaaS).">
+<meta property="og:title" content="Aiden Fox · Embedded & Robotics Engineer">
+<meta property="og:description" content="I build real robots end to end: CAD, PCBs, firmware, and autonomy.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aidenfox.dev">
 <meta property="og:image" content="https://aidenfox.dev/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Aiden Fox — Embedded & Robotics Engineer">
-<meta name="twitter:description" content="I build real robots end to end — CAD, PCBs, firmware, and autonomy.">
+<meta name="twitter:title" content="Aiden Fox · Embedded & Robotics Engineer">
+<meta name="twitter:description" content="I build real robots end to end: CAD, PCBs, firmware, and autonomy.">
 <meta name="twitter:image" content="https://aidenfox.dev/assets/og.png">
 <meta name="theme-color" content="#070b09">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Aiden Fox","url":"https://aidenfox.dev","jobTitle":"Computer Engineering & Computer Science student — embedded & robotics","affiliation":{"@type":"CollegeOrUniversity","name":"University of Southern California"},"sameAs":["https://github.com/Ace2932","https://www.linkedin.com/in/aidenfox/"],"knowsAbout":["Embedded systems","Robotics","ROS 2","PCB design","Real-time firmware","Reinforcement learning"]}
+{"@context":"https://schema.org","@type":"Person","name":"Aiden Fox","url":"https://aidenfox.dev","jobTitle":"Computer Engineering & Computer Science student, embedded & robotics","affiliation":{"@type":"CollegeOrUniversity","name":"University of Southern California"},"sameAs":["https://github.com/Ace2932","https://www.linkedin.com/in/aidenfox/"],"knowsAbout":["Embedded systems","Robotics","ROS 2","PCB design","Real-time firmware","Reinforcement learning"]}
 </script>
 <style>
   :root{
@@ -168,7 +168,7 @@
   <div class="wrap">
     <div class="kicker">Embedded · Robotics · Full-stack</div>
     <h1>I build real robots<br><span class="em">end&#8209;to&#8209;end.</span></h1>
-    <p class="lead">CAD, custom <b>PCBs</b>, firmware, and autonomy — the whole hardware↔software seam. Currently building <span style="color:var(--copper)">Fennec</span>, an autonomous quadruped, and running <span style="color:var(--copper)">GitSpider</span>, a CI-observability SaaS.</p>
+    <p class="lead">CAD, custom <b>PCBs</b>, firmware, and autonomy: the whole hardware↔software seam. Currently building <span style="color:var(--copper)">Fennec</span>, an autonomous quadruped, and running <span style="color:var(--copper)">GitSpider</span>, a CI-observability SaaS.</p>
     <p class="meta">Computer Engineering + CS @ USC · grad Dec 2027 · Los Angeles, CA</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub ↗</a>
@@ -184,22 +184,22 @@
   <section class="block" id="fennec">
     <div class="desig"><span class="pad"></span>U1 · FLAGSHIP · SOLO BUILD</div>
     <div class="proj-head">
-      <h2>🦊 Fennec — Autonomous Quadruped</h2>
+      <h2>🦊 Fennec · Autonomous Quadruped</h2>
       <span class="status">Phase 1 · hardware bring-up</span>
     </div>
-    <p class="subtitle">A four-legged robot taken from bare platform to walking autonomy — mechanical, electrical, and software all mine. Built on the open Nova-SM3 platform, redesigned into my own machine.</p>
+    <p class="subtitle">A four-legged robot taken from bare platform to walking autonomy: mechanical, electrical, and software all mine. Built on the open Nova-SM3 platform, redesigned into my own machine.</p>
 
     <div class="video mod">
       <video src="assets/fennec-demo.mp4" autoplay muted loop playsinline controls></video>
       <span class="ds">DS1 · RL LOCOMOTION</span>
     </div>
-    <div class="caption">▸ Fennec learning to climb stairs — reinforcement-learning locomotion policy (MuJoCo simulation).</div>
+    <div class="caption">▸ Fennec learning to climb stairs: reinforcement-learning locomotion policy (MuJoCo simulation).</div>
 
     <ul class="feat">
-      <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super — locomotion, calibration &amp; safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
-      <li><b>Custom power PCB:</b> designed in KiCad — multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
-      <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos — joint mapping, hard-stop limits, watchdog liveness.</li>
-      <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop — robotics code that fails safe.</li>
+      <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super: locomotion, calibration &amp; safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
+      <li><b>Custom power PCB:</b> designed in KiCad: multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
+      <li><b>Firmware:</b> Teensy 4.1 real-time bus master (PlatformIO) driving 12× Feetech STS3215 serial-bus servos: joint mapping, hard-stop limits, watchdog liveness.</li>
+      <li><b>Safety-first + tested:</b> pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop. Robotics code that fails safe.</li>
     </ul>
 
     <div class="grid2" id="hardware" style="margin-top:26px">
@@ -211,7 +211,7 @@
             shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
           <span class="ds">DS2 · POWER BOARD</span>
         </div>
-        <figcaption class="caption">▸ Power board v2 — drag to spin, scroll to zoom. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
+        <figcaption class="caption">▸ Power board v2: drag to spin, scroll to zoom. XT60 battery input, MOSFET reverse-polarity protection, five buck-rail stations with per-rail INA226 telemetry, hardware E-stop chain. DRC/ERC clean, fabbed via JLCPCB.</figcaption>
       </figure>
       <figure class="pcbshot">
         <div class="mod">
@@ -221,7 +221,7 @@
             shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
           <span class="ds">DS3 · LOGIC BOARD</span>
         </div>
-        <figcaption class="caption">▸ Logic board — drag to spin, scroll to zoom. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
+        <figcaption class="caption">▸ Logic board: drag to spin, scroll to zoom. Teensy 4.1 bus-master + aux-MCU slot, harness breakouts, and the IDC telemetry link to the power board.</figcaption>
       </figure>
     </div>
 
@@ -233,7 +233,7 @@
           shadow-intensity="0.6" exposure="1.1" touch-action="pan-y"></model-viewer>
         <span class="ds">DS4 · LEG v6 ASSEMBLY</span>
       </div>
-      <figcaption class="caption">▸ Leg v6 — the 3D-printed leg I designed (shoulder → femur → tibia, STS3215 horn interfaces, roller foot), shown in its folded print-check pose. Drag to inspect.</figcaption>
+      <figcaption class="caption">▸ Leg v6: the 3D-printed leg I designed (shoulder → femur → tibia, STS3215 horn interfaces, roller foot), shown in its folded print-check pose. Drag to inspect.</figcaption>
     </figure>
 
     <!-- FAB PHOTOS: enable when assembled hardware photos exist.
@@ -257,15 +257,15 @@
   <section class="block" id="gitspider">
     <div class="desig"><span class="pad"></span>U2 · SHIPPED &amp; MONETIZED SaaS</div>
     <div class="proj-head">
-      <h2>🕷️ GitSpider — CI Observability</h2>
+      <h2>🕷️ GitSpider · CI Observability</h2>
       <span class="status">live · paying tiers</span>
     </div>
     <p class="subtitle">Spider-sense for your GitHub Actions: crawls CI runs to catch slowdowns, flaky tests, and wasted minutes, and alerts the moment something drifts. A real product I built and launched.</p>
     <ul class="feat">
       <li><b>Full stack:</b> Bun + Hono (server + SSR JSX), Postgres 16 (30-day raw events → daily rollups kept forever), deployed on Fly.io.</li>
-      <li><b>GitHub App integration</b> — reads Actions/Contents/Metadata, comments on PRs, never touches your code.</li>
+      <li><b>GitHub App integration</b>: reads Actions/Contents/Metadata, comments on PRs, never touches your code.</li>
       <li><b>Stripe subscriptions</b> (Team / Org tiers, 14-day trial), Slack alert webhooks, public repo scorecards + badges.</li>
-      <li><b>Published GitHub Action</b> — a CI-config-hygiene ratchet that fails builds when cache/timeout/concurrency waste creeps back in.</li>
+      <li><b>Published GitHub Action</b>: a CI-config-hygiene ratchet that fails builds when cache/timeout/concurrency waste creeps back in.</li>
     </ul>
     <div class="chips">
       <span class="chip">Bun</span><span class="chip">Hono</span><span class="chip">TypeScript</span><span class="chip">Postgres</span><span class="chip">GitHub App</span><span class="chip">Stripe</span><span class="chip">Fly.io</span><span class="chip">Docker</span>
@@ -285,7 +285,7 @@
       </div>
       <div class="card">
         <h3>🏗️ Motif</h3>
-        <p>Interning at Motif, an AEC (architecture, engineering &amp; construction) company — building on their AI agents platform.</p>
+        <p>Interning at Motif, an AEC (architecture, engineering &amp; construction) company, building on their AI agents platform.</p>
       </div>
     </div>
   </section>
