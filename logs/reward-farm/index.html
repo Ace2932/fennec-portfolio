@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The reward wasn't exploited, it was obeyed · Aiden Fox</title>
-<meta name="description" content="Fennec's RL locomotion policy looked like it was walking. It was carrying a leg 97% of the time and travelling backwards. How a 12.5 mm measurement error taught a robot the wrong thing, and what fixed it.">
+<meta name="description" content="Fennec's RL locomotion policy looked like it was walking. It was carrying a leg 97% of the time and traveling backward. How a 12.5 mm measurement error taught a robot the wrong thing, and what fixed it.">
 <meta property="og:title" content="The reward wasn't exploited, it was obeyed">
 <meta property="og:description" content="A quadruped that looked like it was walking, wasn't. Debugging a reward function that was working perfectly.">
 <meta property="og:type" content="article">
@@ -41,15 +41,15 @@
   <h1>The reward wasn't exploited.<br>It was obeyed.</h1>
   <p class="logmeta">17 July 2026 · MuJoCo MJX + Brax PPO · Fennec quadruped</p>
 
-  <p class="standfirst">Twelve checkpoints of steadily climbing reward. A video that looked like walking. The policy was carrying one leg in the air 97% of the time and travelling <span class="bad">backwards</span>. Nothing was broken except the thing I was using to measure.</p>
+  <p class="standfirst">Twelve checkpoints of steadily climbing reward. A video that looked like walking. The policy was carrying one leg in the air 97% of the time and traveling <span class="bad">backward</span>. Nothing was broken except the thing I was using to measure.</p>
 
   <h2>The lie</h2>
   <p>Checkpoint 12 read 2949 reward per step, and every eval before it had climbed. The video showed a robot moving. I believed it.</p>
-  <p>Then I actually measured what the legs were doing. The rear-right foot was airborne <b>97% of the time</b>. It was walking on three legs. And at a forward velocity command, it had travelled <b class="bad">-0.148 m</b> in world x. It was spiralling backwards.</p>
+  <p>Then I actually measured what the legs were doing. The rear-right foot was airborne <b>97% of the time</b>. It was walking on three legs. And at a forward velocity command, it had traveled <b class="bad">-0.148 m</b> in world x. It was spiraling backward.</p>
   <p>It was not walking badly. It was farming a broken reward that happened to produce forward-ish body motion, and the reward was paying out beautifully.</p>
 
   <h2>The one good decision</h2>
-  <p>Instrument, don't theorise. I wrote a probe that dumps every <em>weighted</em> reward term, ranked, plus per-foot airborne fraction and swing speed, for any trained checkpoint.</p>
+  <p>Instrument, don't theorize. I wrote a probe that dumps every <em>weighted</em> reward term, ranked, plus per-foot airborne fraction and swing speed, for any trained checkpoint.</p>
   <p>The important part was structural: I made the returned reward the literal sum of named term variables, so the logged metrics equal the reward <b>by construction</b>. They had already drifted. A comment said the clearance weight was <code>3.0</code>. The live weight was <code>10.0</code>.</p>
   <p>Then a piece of luck that made everything cheap. <b>Contact is not in the observation.</b> So re-probing a checkpoint with a corrected contact test replays a bit-identical trajectory. I could diagnose the true gait of an already-trained policy for free, with no retraining. That single fact drove the entire debug.</p>
 
@@ -57,7 +57,7 @@
   <p>Three bugs, each hidden behind the last.</p>
 
   <h3>1. The contact test was wrong by 12.5 mm</h3>
-  <p>The foot geom is a sphere of radius 0.014 centred on the body origin. The contact test was <code>foot_z &lt; 0.025</code>. Measured weight-bearing height was <code>foot_z = 0.0125</code>.</p>
+  <p>The foot geom is a sphere of radius 0.014 centered on the body origin. The contact test was <code>foot_z &lt; 0.025</code>. Measured weight-bearing height was <code>foot_z = 0.0125</code>.</p>
   <p>So a foot could float <b>12.5 mm off the floor and still score as planted</b>. Every gait shaper I had, air, gait, clearance and slip, read that one test. All four were blind inside the same dead band. Fixed by deriving contact from the radius instead of a magic number: <code>(foot_z - FOOT_RADIUS) &lt; 1e-3</code>.</p>
 
   <h3>2. Clearance was inverted</h3>
@@ -87,23 +87,23 @@
   <p>Fix was a carry cost: <code>-1.5 * clip(air - 0.4, 0, 0.6)</code>. A held foot costs 0.9 per step that nothing offsets. A normal stride pays zero. A cost, per the rule.</p>
 
   <h2>It walked, in a circle</h2>
-  <p>60M steps with the carry cost. Travelled <b class="win">+0.508 m</b>, forwards, all four feet cycling, carry 0.000, ghost 0.000. The video showed a level full-height stance and four legs stepping, nothing like the earlier three-legged nose-down spiral.</p>
+  <p>60M steps with the carry cost. Traveled <b class="win">+0.508 m</b>, forward, all four feet cycling, carry 0.000, ghost 0.000. The video showed a level full-height stance and four legs stepping, nothing like the earlier three-legged nose-down spiral.</p>
   <p>But it walked an arc. 0.51 m of world travel against 0.253 m of body-frame forward motion.</p>
 
   <h2>The fourth time I was wrong</h2>
   <p>Cause looked like residual gait asymmetry steering a constant yaw drift, with the yaw term under-weighted at a 5:1 ratio against tracking where the reference uses 2:1. I bumped yaw from 0.3 to 0.75.</p>
   <p>Reward then <b>declined steadily</b>, 2382 down to 2118 over 28M steps. I read the falling trace and predicted the bet had failed. I wrote down that I expected the probe to show it still circling.</p>
-  <p>The probe showed <b class="win">+1.304 m travelled</b>, two and a half times the circle, and the rear-right asymmetry had shrunk from 0.72 to 0.605. The declining reward was the transition cost of trading scored reward for straightness. Which is a case I had explicitly flagged as possible earlier, and then talked myself out of.</p>
+  <p>The probe showed <b class="win">+1.304 m traveled</b>, two and a half times the circle, and the rear-right asymmetry had shrunk from 0.72 to 0.605. The declining reward was the transition cost of trading scored reward for straightness. Which is a case I had explicitly flagged as possible earlier, and then talked myself out of.</p>
 
   <h2>Where it ended up</h2>
-  <p>Final result is a real forward trot. Diagonal pairs matched within their pairs, which is the trot signature. Rear-right carry eliminated. Then two more runs made it better in ways I also mispredicted: rough terrain at 0.4 and wider domain randomisation at 1.5x both made the training reward go <em>down</em> while the probe showed the best gait of the session.</p>
+  <p>Final result is a real forward trot. Diagonal pairs matched within their pairs, which is the trot signature. Rear-right carry eliminated. Then two more runs made it better in ways I also mispredicted: rough terrain at 0.4 and wider domain randomization at 1.5x both made the training reward go <em>down</em> while the probe showed the best gait of the session.</p>
 
   <table>
     <tr>
       <th>metric</th><th>ckpt12</th><th>+ contact/clear/gait</th><th>+ carry cost</th><th>+ yaw</th><th>+ terrain + DR</th>
     </tr>
     <tr>
-      <td>travelled (m, world x)</td><td class="bad">-0.148</td><td>n/a</td><td>+0.508</td><td>+1.304</td><td><b>+2.094</b></td>
+      <td>traveled (m, world x)</td><td class="bad">-0.148</td><td>n/a</td><td>+0.508</td><td>+1.304</td><td><b>+2.094</b></td>
     </tr>
     <tr>
       <td>rear-right air fraction</td><td>0.970</td><td>0.970</td><td>0.720</td><td>0.605</td><td><b>0.367</b></td>
@@ -116,8 +116,8 @@
     </tr>
   </table>
 
-  <p>The final gait has diagonal pairs at 0.357/0.443/0.448/0.367, each pair internally matched and the two diagonals balanced against each other. Harder training conditions regularised it into something cleaner, faster and more symmetric than any easier run produced. It also made it transfer-robust, which is the part that actually matters, because this policy is going onto real servos.</p>
-  <p>One more thing fell out of that. I had a phase clock designed and built to <em>force</em> clean diagonal pairing. Terrain and wider randomisation produced it on their own, with no observation change and no graft. I shelved the phase clock.</p>
+  <p>The final gait has diagonal pairs at 0.357/0.443/0.448/0.367, each pair internally matched and the two diagonals balanced against each other. Harder training conditions regularized it into something cleaner, faster and more symmetric than any easier run produced. It also made it transfer-robust, which is the part that actually matters, because this policy is going onto real servos.</p>
+  <p>One more thing fell out of that. I had a phase clock designed and built to <em>force</em> clean diagonal pairing. Terrain and wider randomization produced it on their own, with no observation change and no graft. I shelved the phase clock.</p>
 
   <h2>The part worth keeping</h2>
   <p>Every bug in this arc had the same shape: <b>a value describing the system, maintained separately from the system, drifting out of sync with it.</b> A comment saying 3.0 next to a weight of 10.0. A contact threshold of 0.025 next to a foot radius of 0.014. Constants scaled for a different robot's geometry. Every fix was the same move too, which was re-anchoring the description to something measured.</p>
