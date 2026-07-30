@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The reward wasn't exploited, it was obeyed · Aiden Fox</title>
+<meta name="description" content="Fennec's RL locomotion policy looked like it was walking. It was carrying a leg 97% of the time and travelling backwards. How a 12.5 mm measurement error taught a robot the wrong thing, and what fixed it.">
+<meta property="og:title" content="The reward wasn't exploited, it was obeyed">
+<meta property="og:description" content="A quadruped that looked like it was walking, wasn't. Debugging a reward function that was working perfectly.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aidenfox.dev/logs/reward-farm/">
+<meta property="og:image" content="https://aidenfox.dev/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The reward wasn't exploited, it was obeyed">
+<meta name="twitter:description" content="A quadruped that looked like it was walking, wasn't.">
+<meta name="twitter:image" content="https://aidenfox.dev/assets/og.png">
+<meta name="theme-color" content="#070b09">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+
+<header><div class="wrap"><nav>
+  <div class="logo">AIDEN FOX</div>
+  <div class="links">
+    <a href="/#fennec">U1·Fennec</a>
+    <a href="/#hardware">DS·Hardware</a>
+    <a href="/#arm">A1·Arm</a>
+    <a href="/#gitspider">U2·GitSpider</a>
+    <a href="/#more">J1·More</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</nav></div></header>
+
+<div class="wrap">
+<article class="log">
+
+  <div class="desig"><span class="pad"></span>LOG 001 · FENNEC · RL LOCOMOTION</div>
+  <h1>The reward wasn't exploited.<br>It was obeyed.</h1>
+  <p class="logmeta">17 July 2026 · MuJoCo MJX + Brax PPO · Fennec quadruped</p>
+
+  <p class="standfirst">Twelve checkpoints of steadily climbing reward. A video that looked like walking. The policy was carrying one leg in the air 97% of the time and travelling <span class="bad">backwards</span>. Nothing was broken except the thing I was using to measure.</p>
+
+  <h2>The lie</h2>
+  <p>Checkpoint 12 read 2949 reward per step, and every eval before it had climbed. The video showed a robot moving. I believed it.</p>
+  <p>Then I actually measured what the legs were doing. The rear-right foot was airborne <b>97% of the time</b>. It was walking on three legs. And at a forward velocity command, it had travelled <b class="bad">-0.148 m</b> in world x. It was spiralling backwards.</p>
+  <p>It was not walking badly. It was farming a broken reward that happened to produce forward-ish body motion, and the reward was paying out beautifully.</p>
+
+  <h2>The one good decision</h2>
+  <p>Instrument, don't theorise. I wrote a probe that dumps every <em>weighted</em> reward term, ranked, plus per-foot airborne fraction and swing speed, for any trained checkpoint.</p>
+  <p>The important part was structural: I made the returned reward the literal sum of named term variables, so the logged metrics equal the reward <b>by construction</b>. They had already drifted. A comment said the clearance weight was <code>3.0</code>. The live weight was <code>10.0</code>.</p>
+  <p>Then a piece of luck that made everything cheap. <b>Contact is not in the observation.</b> So re-probing a checkpoint with a corrected contact test replays a bit-identical trajectory. I could diagnose the true gait of an already-trained policy for free, with no retraining. That single fact drove the entire debug.</p>
+
+  <h2>The cascade</h2>
+  <p>Three bugs, each hidden behind the last.</p>
+
+  <h3>1. The contact test was wrong by 12.5 mm</h3>
+  <p>The foot geom is a sphere of radius 0.014 centred on the body origin. The contact test was <code>foot_z &lt; 0.025</code>. Measured weight-bearing height was <code>foot_z = 0.0125</code>.</p>
+  <p>So a foot could float <b>12.5 mm off the floor and still score as planted</b>. Every gait shaper I had, air, gait, clearance and slip, read that one test. All four were blind inside the same dead band. Fixed by deriving contact from the radius instead of a magic number: <code>(foot_z - FOOT_RADIUS) &lt; 1e-3</code>.</p>
+
+  <h3>2. Clearance was inverted</h3>
+  <p>I was paying <code>+10.0 * min(z, 0.08) * speed</code>. That rewards height multiplied by speed. Nothing in it ever required the foot to come back down. It was farmable by construction. The reference implementation I should have read first uses this as a <b>cost</b>, not a reward.</p>
+
+  <h3>3. The gait term paid for standing still</h3>
+  <p>My gait reward was <code>|(FL+RR) - (FR+RL)| / 2</code> with no temporal component at all. A frozen half-trot scores identically to a real one. It was paying checkpoint 12 exactly 0.3606 per step for precisely the held diagonal it was doing. The probe matched that to four decimal places.</p>
+  <p>Worth admitting: my first proposed fix, <code>|FL·RR - FR·RL|</code>, would not have worked either. The policy holds an entire diagonal, which that form also rewards. I deleted the term instead.</p>
+
+  <h2>The revelation</h2>
+  <p>Re-probing checkpoint 12 with radius-corrected contact flipped the whole framing:</p>
+<pre><code>        reward sees   TRUE    ghost
+  FR:        0.000   0.110    0.110   &lt;- 100% of its air time invisible
+  RL:        0.000   0.122    0.122   &lt;- 100% of its air time invisible
+  RR:        0.970   0.975    0.005   &lt;- genuinely carried</code></pre>
+  <p><b>The front-right and rear-left legs were stepping the whole time. The reward saw zero.</b> Every lift was under 12.5 mm, so it never registered. For those legs, a small correct step earned nothing and was actively punished, because slip billed their swing speed as sliding while contact never went false. Meanwhile a leg held in the air collected +1.07 per step.</p>
+
+  <blockquote><p>The reward wasn't being exploited. It was being obeyed. There was no cheating robot. There was a broken instrument and a policy doing exactly what it was told.</p></blockquote>
+
+  <h2>The rule that came out of it</h2>
+  <p>Across twelve runs, one pattern held without exception. <b>Every positive shaper got farmed. No cost ever did.</b> Clearance, gait and air each fixed the previous run's symptom and became the next run's exploit. Slip, splay and upright, all costs, quietly did their job the entire time.</p>
+  <p>The reference implementation's total positive budget is 2.1. Mine had reached 16.4, with clearance alone at +10. So the rule now lives in the env: <b>only the task and staying alive may be positive. Anything that shapes <em>how</em> is a cost.</b></p>
+
+  <h2>The carry that survived surgery</h2>
+  <p>After fixing contact, clearance and gait, a fresh 10M-step resume evaluated honestly and climbed. The contact fix had landed, ghost was 0.000, and the two invisible legs were cycling.</p>
+  <p>But rear-right stayed pinned at exactly 0.970. Not improving slowly. <b>Zero gradient.</b> The reason is uncomfortable and obvious in hindsight: at 0.15 to 0.35 m/s, three legs already max out the tracking and progress terms. The fourth leg was dead weight the reward was genuinely indifferent to. And my clearance cost, being <code>|z - 0.05|</code>, let a foot park at the target height for free.</p>
+  <p>Fix was a carry cost: <code>-1.5 * clip(air - 0.4, 0, 0.6)</code>. A held foot costs 0.9 per step that nothing offsets. A normal stride pays zero. A cost, per the rule.</p>
+
+  <h2>It walked, in a circle</h2>
+  <p>60M steps with the carry cost. Travelled <b class="win">+0.508 m</b>, forwards, all four feet cycling, carry 0.000, ghost 0.000. The video showed a level full-height stance and four legs stepping, nothing like the earlier three-legged nose-down spiral.</p>
+  <p>But it walked an arc. 0.51 m of world travel against 0.253 m of body-frame forward motion.</p>
+
+  <h2>The fourth time I was wrong</h2>
+  <p>Cause looked like residual gait asymmetry steering a constant yaw drift, with the yaw term under-weighted at a 5:1 ratio against tracking where the reference uses 2:1. I bumped yaw from 0.3 to 0.75.</p>
+  <p>Reward then <b>declined steadily</b>, 2382 down to 2118 over 28M steps. I read the falling trace and predicted the bet had failed. I wrote down that I expected the probe to show it still circling.</p>
+  <p>The probe showed <b class="win">+1.304 m travelled</b>, two and a half times the circle, and the rear-right asymmetry had shrunk from 0.72 to 0.605. The declining reward was the transition cost of trading scored reward for straightness. Which is a case I had explicitly flagged as possible earlier, and then talked myself out of.</p>
+
+  <h2>Where it ended up</h2>
+  <p>Final result is a real forward trot. Diagonal pairs matched within their pairs, which is the trot signature. Rear-right carry eliminated. Then two more runs made it better in ways I also mispredicted: rough terrain at 0.4 and wider domain randomisation at 1.5x both made the training reward go <em>down</em> while the probe showed the best gait of the session.</p>
+
+  <table>
+    <tr>
+      <th>metric</th><th>ckpt12</th><th>+ contact/clear/gait</th><th>+ carry cost</th><th>+ yaw</th><th>+ terrain + DR</th>
+    </tr>
+    <tr>
+      <td>travelled (m, world x)</td><td class="bad">-0.148</td><td>n/a</td><td>+0.508</td><td>+1.304</td><td><b>+2.094</b></td>
+    </tr>
+    <tr>
+      <td>rear-right air fraction</td><td>0.970</td><td>0.970</td><td>0.720</td><td>0.605</td><td><b>0.367</b></td>
+    </tr>
+    <tr>
+      <td>ghost feet (invisible)</td><td>0.110</td><td>0.000</td><td>0.000</td><td>0.000</td><td><b>0.000</b></td>
+    </tr>
+    <tr>
+      <td>gait</td><td class="bad">3-leg backward spiral</td><td>still carried</td><td>4-leg circle</td><td>56% straight</td><td><b>textbook trot</b></td>
+    </tr>
+  </table>
+
+  <p>The final gait has diagonal pairs at 0.357/0.443/0.448/0.367, each pair internally matched and the two diagonals balanced against each other. Harder training conditions regularised it into something cleaner, faster and more symmetric than any easier run produced. It also made it transfer-robust, which is the part that actually matters, because this policy is going onto real servos.</p>
+  <p>One more thing fell out of that. I had a phase clock designed and built to <em>force</em> clean diagonal pairing. Terrain and wider randomisation produced it on their own, with no observation change and no graft. I shelved the phase clock.</p>
+
+  <h2>The part worth keeping</h2>
+  <p>Every bug in this arc had the same shape: <b>a value describing the system, maintained separately from the system, drifting out of sync with it.</b> A comment saying 3.0 next to a weight of 10.0. A contact threshold of 0.025 next to a foot radius of 0.014. Constants scaled for a different robot's geometry. Every fix was the same move too, which was re-anchoring the description to something measured.</p>
+  <p>And the human half. The reward trace misled me five separate times across this arc. Every single time, the probe corrected it, and not one of those corrections came from thinking harder. The discipline that carried this wasn't being right. It was refusing to trust the reward curve, my own predictions, or a plausible theory over a direct measurement.</p>
+  <p>Which is why the operating rule is now three words: <b>don't read the reward trace, probe.</b></p>
+
+  <a class="backlink" href="/#fennec">&larr; back to Fennec</a>
+
+</article>
+</div>
+
+<footer id="contact"><div class="wrap">
+  <div class="avail">Seeking Summer 2027 robotics / embedded internships</div>
+  <div class="fl">
+    <a href="mailto:aidenfox2013@gmail.com">aidenfox2013@gmail.com</a>
+    <a href="https://github.com/Ace2932" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/aidenfox/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="titleblock">
+    <div><b>SHEET</b> log 001</div><div><b>REV</b> A</div>
+    <div><b>ENG</b> Aiden Fox</div><div><b>DOMAIN</b> aidenfox.dev</div>
+  </div>
+</div></footer>
+
+</body>
+</html>
