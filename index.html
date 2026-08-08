@@ -199,7 +199,8 @@
     <ul class="feat">
       <li><b>Autonomy:</b> ROS 2 (Humble) on a Jetson Orin Nano Super: locomotion, calibration &amp; safety nodes; Unitree LiDAR + RealSense for perception. Building toward VLA-model control, 3D SLAM, and mobile manipulation.</li>
       <li><b>Custom power PCB:</b> designed in KiCad: multi-rail battery distribution, INA226 per-rail telemetry, half-duplex servo-bus driver, E-stop chain, DRC/ERC clean.</li>
-      <li><b>Firmware:</b> 200 Hz hard-real-time loop on a Teensy 4.1 (Cortex-M7) with <b>1 µs p99 scheduling jitter</b>, 100× under the acceptance gate. From-scratch STS3215 half-duplex bus driver (74HC125 timing verified on a logic analyzer), software watchdog, latency histograms over USB-CDC.</li>
+      <li><b>Firmware:</b> 200 Hz hard-real-time loop on a Teensy 4.1 (Cortex-M7) with a software watchdog (SCB_AIRCR reset on hang) and exec-time/latency histograms over USB-CDC. From-scratch STS3215 half-duplex bus driver (PING / READ_DATA / WRITE_DATA / SYNC_WRITE, no vendor SDK) covered by frame-encoding and bus-timing unit tests.</li>
+      <li><b>Measured, not assumed:</b> servo system-ID on a custom ~2.5 kHz bench logger. Isolated a 75 ms command-to-motion deadtime as static friction rather than supply sag by re-running across rail voltages, and <b>overturned a first-order lag model</b> before it reached the simulator: the response is rate-limited, not first-order, so fitting a time constant to settle time badly overstates phase lag.</li>
       <li><b>Perception:</b> LIDAR-inertial SLAM (Unitree L2 + POINT-LIO) on the Jetson. Found and patched an IMU-bridge bug in the vendor SDK and shipped a <b>public fork</b> restoring the 250 Hz IMU stream.</li>
       <li><b>Safety-first + tested:</b> latching E-stop + battery-low FSM in firmware; pytest suites for preflight, safety-envelope, battery-shutdown, and hard-stop. Robotics code that fails safe.</li>
     </ul>
