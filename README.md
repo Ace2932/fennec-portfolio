@@ -1,6 +1,8 @@
 # Fennec: Autonomous Quadruped (silicon → autonomy, built solo)
 
-A four-legged robot I designed and brought up end-to-end: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM: all integrated into one machine that stands, balances, and maps. Built on the open-source Nova-SM3 platform, heavily redesigned.
+A four-legged robot I designed end to end and am now bringing up: custom power electronics, from-scratch real-time firmware, a servo-bus driver, a ROS 2 control contract, and LIDAR-inertial SLAM, designed to come together as one machine that stands, balances, and maps. Built on the open-source Nova-SM3 platform, heavily redesigned.
+
+**Status:** power and logic boards fabricated and in bring-up; mechanical assembly in progress; locomotion is being developed in MuJoCo simulation.
 
 **Why it matters:** most robotics projects stop at one layer. Fennec is the whole stack: I own it from the PCB copper to the autonomy node, which is exactly the systems-integration work that makes hardware actually ship.
 
@@ -8,8 +10,8 @@ A four-legged robot I designed and brought up end-to-end: custom power electroni
 - **200 Hz hard-real-time control** on a Teensy 4.1 (IMXRT1062 Cortex-M7): IntervalTimer ISR tick, software watchdog (SCB_AIRCR reset on hang), exec-time/latency histograms streamed over USB-CDC.
 - **Feetech STS3215 servo-bus driver, from scratch**: half-duplex protocol (PING / READ_DATA / WRITE_DATA / SYNC_WRITE) with no vendor SDK dependency, covered by frame-encoding and bus-timing unit tests, plus categorized error counters, per-joint slew-rate limiting, round-robin telemetry.
 - **Servo system-identification on a custom ~2.5 kHz bench logger**: step response no-load and under a known 0.11 N·m load. Isolated a **75 ms command-to-motion deadtime** as static friction rather than supply sag by re-running across rail voltages; cross-validated peak speed against datasheet to within 1.5%, which also resolved the ambiguous raw-speed register unit. Most usefully, the data **overturned a first-order lag model** before it reached the simulator: the response is rate-limited (constant-velocity traverse), so fitting a time constant to settle time badly overstates real phase lag.
-- **Custom multi-rail power PCB** (KiCad): battery → regulated buck rails, INA226 per-rail current/voltage telemetry, MOSFET reverse-polarity protection, a hardware safety/E-stop chain. DRC/ERC clean, fabricated. Mounting-hole keepouts **proven effective rather than merely specified**: 196 sampled points tested point-in-polygon against all 45 filled copper polygons (plus 334 tracks, 62 vias, 168 pads), which surfaced an unrecorded washer-overhang short path across battery negative.
-- **20-topic ROS 2 contract** (micro-ROS / XRCE-DDS) from the Teensy up to an NVIDIA Jetson Orin Nano (embedded Linux), with a latching E-stop + battery-low safety FSM (50 ms debounce, explicit `/safety_clear` reset).
+- **Custom multi-rail power PCB** (KiCad): battery → off-the-shelf buck-module rails, INA226 per-rail current/voltage telemetry, MOSFET reverse-polarity protection, a hardware safety/E-stop chain. DRC/ERC clean, fabricated, in bring-up. Mounting-hole keepouts **proven effective rather than merely specified**: 196 sampled points tested point-in-polygon against all 45 filled copper polygons (plus 334 tracks, 62 vias, 168 pads), which surfaced an unrecorded washer-overhang short path across battery negative.
+- **32-topic ROS 2 contract** (micro-ROS / XRCE-DDS) from the Teensy up to an NVIDIA Jetson Orin Nano (embedded Linux), with a latching E-stop + battery-low safety FSM (50 ms debounce, explicit `/safety_clear` reset).
 - **LIDAR-inertial SLAM** (Unitree L2 + POINT-LIO) on the Jetson. Found and fixed an IMU-bridge bug (double `getImuData()` queue drain) in `unilidar_sdk2` and shipped a **public fork** that restored the 250 Hz IMU stream.
 
 ## Research angle
@@ -20,10 +22,10 @@ SLAM on a **legged** platform is harder than on wheels: the body sways during lo
 
 ## Architecture (one glance)
 ```
-Battery ─► [Custom Power PCB: buck rails, INA226 telemetry, MOSFET protect, E-stop chain]
+Battery ─► [Custom Power PCB: buck-module rails, INA226 telemetry, MOSFET protect, E-stop chain]
                  │
          Teensy 4.1 (200 Hz ISR loop, safety FSM, watchdog)
-                 │  half-duplex bus (74HC125)          │ micro-ROS / XRCE-DDS
+                 │  half-duplex bus (74LVC125)          │ micro-ROS / XRCE-DDS
          STS3215 servos ×N                       Jetson Orin Nano (ROS 2, POINT-LIO SLAM ◄─ Unitree L2 LIDAR)
 ```
 
